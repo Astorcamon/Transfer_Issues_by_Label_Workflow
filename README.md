@@ -48,20 +48,20 @@ This workflow (action) for GitHub allows you automatically transfer issues to an
 - ✅ You can create an action for every transference or movement you need or group all in one action.
 - ✅ Use it as it suits you. It's a lot versatile!. 👍😉
 
-💡 **TIP** - You can create an [issue template][Issue-template] labeled by default as security risk and a private repo as target of this type of issues. 
-<br/>When someone reports a risk using the template, the issue will be automatically moved to the private repository you assigned to.
+💡 **TIP** - *You can create an [issue template][Issue-template] labeled by default as security risk and a private repo as target of this type of issues. 
+<br/>When someone reports a risk using the template, the issue will be automatically moved to the private repository you assigned to.*
 
-▶ **Try it** => [Send a Security Risk][security-risk-report]
+▶ **Try it** => *[Send a Security Risk][security-risk-report]*
 
-💡 **TIP** - You can select multiple issues and asign the label spam for sending it to a spam repository.
-<br/>When you want, you can easily clean this repo by recycling (delete / create it). 
-<br/> You also may create an action that periodically do this for you or just do a clean up by removing all issues.
+💡 **TIP** - *You can select multiple issues and asign the label spam for sending it to a spam repository.
+<br/>When you want, you can easily clean this repo by recycling (delete / create it).
+<br/>You also may create an action that periodically do this for you or just do a clean up by removing all issues.*
 
-⚠ **IMPORTANT** - By unknown reasons, any previously existing label on the issue will be removed during the process.
+⚠ **IMPORTANT** - *By unknown reasons, any previously existing label on the issue will be removed during the process.*
 
 ### Credits
-**This project is an encapsulation of the great work of:** [octokit/graphql-action](https://github.com/octokit/graphql-action)
-<br/>Combined with [GitHub - Actions](https://docs.github.com/en/actions) and [GitHub Api - GraphQL](https://docs.github.com/en/graphql)
+***This project is an encapsulation of the great work of:** [octokit/graphql-action](https://github.com/octokit/graphql-action)
+<br/>Combined with [GitHub - Actions](https://docs.github.com/en/actions) and [GitHub Api - GraphQL](https://docs.github.com/en/graphql)*
 
 <br/>
 <hr/>
