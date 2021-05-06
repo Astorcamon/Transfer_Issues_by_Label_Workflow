@@ -20,9 +20,9 @@ jobs:
           
     steps:    
       - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
-        name: Get Issue from ID
+        name: Get Issue ID
         uses: octokit/graphql-action@v2.2.1
-        id: get_issue_from_id
+        id: get_issue_id
         with:
           # Your GraphQL query, see https://developer.github.com/v4/
           query: | 
@@ -32,13 +32,13 @@ jobs:
               }
             }
           owner: ${{ env.SourceOwner }}
-          repo: ${{ env.SourceRepo }}
+          repo: ${{ env.SourceRepo }} 
           issuenum: ${{ github.event.issue.number }}
           
       - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
-        name: Get Repository to ID      
+        name: Get Target Repo ID      
         uses: octokit/graphql-action@v2.2.1
-        id: get_project_to_id
+        id: get_target_id
         with:
           # Your GraphQL query, see https://developer.github.com/v4/
           query: | 
@@ -47,8 +47,6 @@ jobs:
             }
           owner: ${{ env.TargetOwner }}
           repo: ${{ env.TargetRepo }}   
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
           
       - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
         name: Transfer Issue      
@@ -62,10 +60,8 @@ jobs:
               transferIssue(input: {issueId: $issueid, repositoryId: $repotargetid}) 
               { issue { id, title }}
             }
-          issueid: ${{ fromJSON(steps.get_issue_from_id.outputs.data).repository.issue.id }}
-          repotargetid: ${{ fromJSON(steps.get_project_to_id.outputs.data).repository.id }}    
-        env:
-          GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}         
+          issueid: ${{ fromJSON(steps.get_issue_id.outputs.data).repository.issue.id }}
+          repotargetid: ${{ fromJSON(steps.get_target_id.outputs.data).repository.id }}        
       
       # Debug (uncomment to view variables)
       #- run: "echo 'Issue Number: ${{ github.event.issue.number }}'"
