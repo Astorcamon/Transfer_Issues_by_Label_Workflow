@@ -31,10 +31,13 @@ jobs:
                 issue(number:$issuenum) { id }
               }
             }
-          owner: ${{ env.SourceOwner }}
-          repo: ${{ env.SourceRepo }} 
-          issuenum: ${{ github.event.issue.number }}
-          
+          variables: |
+            {
+              "owner": "${{ env.SourceOwner }}",
+              "repo": "${{ env.SourceRepo }}",
+              "issuenum": ${{ github.event.issue.number }}
+            }
+
       - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
         name: Get Target Repo ID      
         uses: octokit/graphql-action@v2.2.1
@@ -45,9 +48,12 @@ jobs:
             query getRepoID ($owner:String!,$repo:String!) {
               repository(owner:$owner,name:$repo) { id }
             }
-          owner: ${{ env.TargetOwner }}
-          repo: ${{ env.TargetRepo }}   
-          
+          variables: |
+            {
+              "owner": "${{ env.TargetOwner }}",
+              "repo": "${{ env.TargetRepo }}"
+            }
+
       - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
         name: Transfer Issue      
         uses: octokit/graphql-action@v2.2.1
@@ -55,14 +61,17 @@ jobs:
         with:
           # Your GraphQL query, see https://developer.github.com/v4/
           query: | 
-            mutation transferIssue ($issueid:String!, $repotargetid:String!) {
+            mutation transferIssue($issueid:ID!, $repotargetid:ID!) {
               __typename 
-              transferIssue(input: {issueId: $issueid, repositoryId: $repotargetid}) 
-              { issue { id, title }}
+              transferIssue(input: {issueId: $issueid, repositoryId: $repotargetid}) {
+                issue { id title }
+              }
             }
-          issueid: ${{ fromJSON(steps.get_issue_id.outputs.data).repository.issue.id }}
-          repotargetid: ${{ fromJSON(steps.get_target_id.outputs.data).repository.id }}        
-      
+          variables: |
+            {
+              "issueid": "${{ fromJSON(steps.get_issue_id.outputs.data).repository.issue.id }}",
+              "repotargetid": "${{ fromJSON(steps.get_target_id.outputs.data).repository.id }}"
+            }
       # Debug (uncomment to view variables)
       #- run: "echo 'Issue Number: ${{ github.event.issue.number }}'"
       #- run: "echo 'Issue ID: ${{ fromJSON(steps.get_issue_from_id.outputs.data).repository.issue.id }}'"
