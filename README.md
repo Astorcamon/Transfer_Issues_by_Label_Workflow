@@ -1,5 +1,5 @@
 <div align="center">
-<a href="https://github.com/Astorcamon/Transfer_Issues_by_Label_Workflow"><img width=800 src="https://github.com/user-attachments/assets/4b6977f4-0e2f-4f61-8eeb-7d30851fe8ad"/></a>
+<a href="https://github.com/Astorcamon/Transfer_Issues_by_Label_Workflow"><img width=800 src="https://github.com/user-attachments/assets/3218227f-5446-4ae9-a794-8327470bba16"/></a>
 
 
 <!--<img width=200 src="https://user-images.githubusercontent.com/67019001/116832951-17b47780-abb7-11eb-9829-588528414ebd.png"/>
@@ -45,8 +45,8 @@ This workflow (action) for GitHub allows you to automatically move issues to the
 You can assign a label to a type of issue and, when someone applies it, the issue is instantly transferred.<br/>
 With this wonderfull tool, you can:
 - ✅ Move security-risk issues to a private repository. (See ⇾ 💡)
-- ✅ Move multiple issues at once by assigning the label you previously defined. (e.g., “move”, “high”, “risk”…)
-- ✅ Send spam issues to a separate repository. (See ⇾ 💡)
+- ✅ Move multiple issues at once by assigning the label you have defined. (e.g., “move”, “high”, “risk”…)
+- ✅ Send spam issues or trash reports to a separate repository. (See ⇾ 💡)
 - ✅ Set different target repositories for different labels. (See ⇾ 💡)
 - ✅ Create a single action per transfer type or group all transfers into one workflow.
 - ✅ Use it however you want — it’s extremely versatile!. 👍
