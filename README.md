@@ -42,7 +42,7 @@
 
 <!-- ## Project Description -->
 This workflow (action) for GitHub allows you to automatically move issues to the target repository you choose.<br/>
-You can assign a label to mark the type of issue you want to move and, when someone applies it, the issue is instantly transferred.<br/>
+You can assign a label to a type of issue and, when someone applies it, the issue is instantly transferred.<br/>
 With this wonderfull tool, you can:
 - ✅ Move security-risk issues to a private repository. (See ⇾ 💡)
 - ✅ Move multiple issues at once by assigning the label you previously defined. (e.g., “move”, “high”, “risk”…)
@@ -86,12 +86,14 @@ Some steps are requiered to use this workflow:
    - Or download the script and add it to your .github/worflows foler.
 
 2. Create a personal access token (PAT) with repository permissions. *(enable all `"repo"` scopes)*
-   - `Go to: User Settings > Developer settings > Personal access tokens > Generate new access token.` Then copy the token.
+   - `Go to: User Settings > Developer settings > Personal access tokens > Generate new access token.`<br/>
+   - Then copy the token.
 
 3. Create a secret named *ACTIONSYNC* and use the *PAT* created in the previous step.
-   - `Go to: Repo Settings > Secrets > New repository secret.` Then paste the token from *step 2*.<br/><br/>
+   - `Go to: Repo Settings > Secrets > New repository secret.`
+   - Then paste the token from *step 2*.<br/><br/>
    ℹ *The secret must be created in the source reposotory, where the action runs.*<br/>
-   ⚠ *If you are not the owner of the target repository, the owner must also create the same token PAT from *step 2**
+   ⚠ *If you arere not the target repository owner, the owner must also create the PAT from *step 2**
 
 4. Create a target repository or use an existing one
    - To use default variables, name the target repository *SourceRepoName_**Private***
