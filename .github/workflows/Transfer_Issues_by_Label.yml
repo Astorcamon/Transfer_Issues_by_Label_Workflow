@@ -19,7 +19,7 @@ jobs:
           TargetRepo: ${{ github.event.repository.name }}Private # The target repository where the issue will be moved to. (Default: SourceRepoNamePrivate)
           
     steps:    
-      - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
+      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
         name: Get Issue ID
         uses: octokit/graphql-action@v2.2.1
         id: get_issue_id
@@ -35,7 +35,7 @@ jobs:
           repo: ${{ env.SourceRepo }} 
           issuenum: ${{ github.event.issue.number }}
           
-      - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
+      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
         name: Get Target Repo ID      
         uses: octokit/graphql-action@v2.2.1
         id: get_target_id
@@ -48,7 +48,7 @@ jobs:
           owner: ${{ env.TargetOwner }}
           repo: ${{ env.TargetRepo }}   
           
-      - if: contains( github.event.issue.labels.*.name, ${{ env.LabelName }})
+      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
         name: Transfer Issue      
         uses: octokit/graphql-action@v2.2.1
         id: transfer_issue
