@@ -1,4 +1,5 @@
 name: Transfer Issues by Label
+
 on:
   issues:
     types: [labeled]
@@ -6,75 +7,71 @@ on:
 jobs:
   TransferIssueByLabel:
     runs-on: ubuntu-latest
-    
+
     env:
-          # Change this "env" variables at yor convenience.
-          # More info at: https://github.com/Astorcamon/Transfer_Issues_by_Label_Workflow        
+      # Change this "env" variables at yor convenience.
+      # More info at: https://github.com/Astorcamon/Transfer_Issues_by_Label_Workflow        
 
-          LabelName: '0 Security Risk' # The name of the label that triggers the action to transfer the issue.
-          GITHUB_TOKEN: ${{ secrets.ACTIONSYNC }} # Personal access token (PAT) or repo secret with PAT. (You must create it)
-          SourceOwner: ${{ github.repository_owner }} # The source repository owner where the action is running and the issue will be moved from. (Default: this repo owner)
-          SourceRepo: ${{ github.event.repository.name }} # The source repository where the action is running and the issue will be moved from. (Default: this repo)
-          TargetOwner: ${{ github.repository_owner }} # The target repository owner where the issue will be moved to. (Default: this repo owner)
-          TargetRepo: ${{ github.event.repository.name }}Private # The target repository where the issue will be moved to. (Default: SourceRepoNamePrivate)
-          
-    steps:    
-      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
-        name: Get Issue ID
-        uses: octokit/graphql-action@v2.2.1
+      LabelNames: '0 Security Risk,1 Critical,2 High' # The name of the label or labels (comma-separated) that triggers the issue transfer
+      GITHUB_TOKEN: ${{ secrets.ACTIONSYNC }} # The personal access token (PAT) or repository secret containing the PAT. (You must create it)
+      SourceOwner: ${{ github.repository_owner }} # The owner username of the source repository where the action runs and the issue is taken. (Default: this repo owner)
+      SourceRepo: ${{ github.event.repository.name }} # The source repository where the action runs and the issue is taken. (Default: this repo)
+      TargetOwner: ${{ github.repository_owner }} # The owner username of the target repository where the issue will be sent. (Default: this repo owner)
+      TargetRepo: ${{ github.event.repository.name }}_Private # The target repository where the issue will be sent. (Default: SourceRepoName_Private)
+
+    steps:
+
+      - name: Determine if issue should be transferred
+        id: check_labels
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ env.GITHUB_TOKEN }}
+          script: |
+            const allowed = "${{ env.LabelNames }}".split(',').map(s => s.trim().toLowerCase());
+            const issueLabels = context.payload.issue.labels.map(l => l.name.toLowerCase());
+            const match = issueLabels.some(l => allowed.includes(l));
+            
+            core.setOutput("shouldRun", match);
+
+      - name: Get Issue ID
+        if: ${{ steps.check_labels.outputs.shouldRun == 'true' }}
         id: get_issue_id
+        uses: actions/github-script@v7
         with:
+          github-token: ${{ env.GITHUB_TOKEN }}
           # Your GraphQL query, see https://developer.github.com/v4/
-          query: | 
-            query getIssueID ($owner:String!,$repo:String!,$issuenum:Int!) {
-              repository(owner:$owner,name:$repo) {
-                issue(number:$issuenum) { id }
-              }
-            }
-          variables: |
-            {
-              "owner": "${{ env.SourceOwner }}",
-              "repo": "${{ env.SourceRepo }}",
-              "issuenum": ${{ github.event.issue.number }}
-            }
+          script: |
+            const result = await github.graphql(`
+              query { repository(owner: "${{ env.SourceOwner }}", name: "${{ env.SourceRepo }}") {
+                  issue(number: ${{ github.event.issue.number }}) { id } } }
+            `);
+            core.setOutput("issueId", result.repository.issue.id);
 
-      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
-        name: Get Target Repo ID      
-        uses: octokit/graphql-action@v2.2.1
+      - name: Get Target Repo ID
+        if: ${{ steps.check_labels.outputs.shouldRun == 'true' }}
         id: get_target_id
+        uses: actions/github-script@v7
         with:
+          github-token: ${{ env.GITHUB_TOKEN }}
           # Your GraphQL query, see https://developer.github.com/v4/
-          query: | 
-            query getRepoID ($owner:String!,$repo:String!) {
-              repository(owner:$owner,name:$repo) { id }
-            }
-          variables: |
-            {
-              "owner": "${{ env.TargetOwner }}",
-              "repo": "${{ env.TargetRepo }}"
-            }
+          script: |
+            const result = await github.graphql(`
+              query {
+                repository(owner: "${{ env.TargetOwner }}", name: "${{ env.TargetRepo }}") { id } }
+            `);
+            core.setOutput("repoId", result.repository.id);
 
-      - if: ${{ contains(github.event.issue.labels.*.name, env.LabelName) }}
-        name: Transfer Issue      
-        uses: octokit/graphql-action@v2.2.1
-        id: transfer_issue
+      - name: Transfer Issue
+        if: ${{ steps.check_labels.outputs.shouldRun == 'true' }}
+        uses: actions/github-script@v7
         with:
-          # Your GraphQL query, see https://developer.github.com/v4/
-          query: | 
-            mutation transferIssue($issueid:ID!, $repotargetid:ID!) {
-              __typename 
-              transferIssue(input: {issueId: $issueid, repositoryId: $repotargetid}) {
-                issue { id title }
-              }
-            }
-          variables: |
-            {
-              "issueid": "${{ fromJSON(steps.get_issue_id.outputs.data).repository.issue.id }}",
-              "repotargetid": "${{ fromJSON(steps.get_target_id.outputs.data).repository.id }}"
-            }
-      # Debug (uncomment to view variables)
-      #- run: "echo 'Issue Number: ${{ github.event.issue.number }}'"
-      #- run: "echo 'Issue ID: ${{ fromJSON(steps.get_issue_from_id.outputs.data).repository.issue.id }}'"
-      #- run: "echo 'Target Repo ID: ${{ fromJSON(steps.get_project_to_id.outputs.data).repository.id }}'"
-      #- run: "echo 'New Issue ID: ${{ fromJSON(steps.transfer_issue.outputs.data).issue.id }}'"
-      #- run: "echo 'Label 0: ${{ github.event.issue.labels[0].name }}'"
+          github-token: ${{ env.GITHUB_TOKEN }}
+          script: |
+            const issueId = "${{ steps.get_issue_id.outputs.issueId }}";
+            const repoId = "${{ steps.get_target_id.outputs.repoId }}";
+
+            const result = await github.graphql(`
+              mutation { transferIssue( input: { issueId: "${issueId}", repositoryId: "${repoId}" } ) { issue { id title } } }
+            `);
+
+            console.log("Transferred:", result.transferIssue.issue.title);
