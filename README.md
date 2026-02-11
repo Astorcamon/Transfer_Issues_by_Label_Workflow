@@ -38,7 +38,6 @@
 - [Support Development](#support-development)
 -->
 <hr/>
-<br/>
 
 # Transfer Issues by Label (Workflow)
 
@@ -57,9 +56,9 @@ With this wonderfull tool, you can:
 
 ▶ **Try it** ⇾ *[Send a Security Risk][security-risk-report]*
 
-<br/><hr/>
+<br><hr/>
 
-💡 **Tips:** 
+### 💡 **Tips**
 - You can create a [Security Risk template][Issue-template] and define which repository should receive those issues in the workflow.<br/>
 When someone reports a risk using that template, the issue will be instantly transferred — like magic. 🧙‍♂️
 
@@ -75,7 +74,6 @@ When someone reports a risk using that template, the issue will be instantly tra
 
 <br/>
 <hr/>
-<br/>
 
 ## Getting Started
 With this workflow, you can define one or more labels that will be used to transfer issues to another repository.<br/>
@@ -122,7 +120,6 @@ This workflow uses [GitHub - Actions](https://docs.github.com/en/actions) and [G
 
 <br/>
 <hr/>
-<br/>
 
 ## Support Development
 <Table>
