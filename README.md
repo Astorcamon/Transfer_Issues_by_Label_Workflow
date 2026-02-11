@@ -40,6 +40,8 @@
 <hr/>
 <br/>
 
+# Transfer Issues by Label (Workflow)
+
 <!-- ## Project Description -->
 This workflow (action) for GitHub allows you to automatically move issues to the target repository you choose.<br/>
 You can assign a label to a type of issue and, when someone applies it, the issue is instantly transferred.<br/>
